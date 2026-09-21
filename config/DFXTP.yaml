@@ -36,6 +36,7 @@ cells:
     netlist: DFXTP.sp
 
     models:
+      - "config/mc_switches.spice"          
       - "/foss/pdks/sky130A/libs.tech/ngspice/sky130.lib.spice tt"
 
     inputs: [D]
