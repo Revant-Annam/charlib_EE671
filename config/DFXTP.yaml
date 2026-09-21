@@ -1,0 +1,72 @@
+settings:
+  lib_name: DFXTP
+  results_dir: results
+  temperature: 27
+
+  debug: true
+  debug_dir: debug
+
+  logic_thresholds:
+    low: 0.2
+    high: 0.8
+    rising: 0.5
+    falling: 0.5
+
+  named_nodes:
+    primary_power:
+      name: VDD
+      voltage: 1.8
+    primary_ground:
+      name: VSS
+      voltage: 0
+
+  simulation:
+    backend: ngspice-subprocess
+    input_capacitance_procedure: charge_integration
+
+  units:
+    time: ns
+    voltage: V
+    current: uA
+    leakage_power: nW
+    capacitive_load: pF
+    energy: fJ
+
+cells:
+  DFXTP:
+    netlist: DFXTP.sp
+
+    models:
+      - "/foss/pdks/sky130A/libs.tech/ngspice/sky130.lib.spice tt"
+
+    inputs: [D]
+    outputs: [Q]
+
+    clock: posedge CLK
+
+    functions:
+      - "Q = IQ"
+
+    state:
+      - "IQ = D"
+
+    data_slews: [0.06]
+    clock_slews: [0.06]
+    loads: [0.005]
+    metastability_constraint_load: 0.005
+    metastability_constraint_search_tolerance: 0.01
+    metastability_constraint_search_timestep: 0.02
+    metastability_constraint_sweep_samples: 15
+
+    # Without explicit bounds, the setup/hold sweep has no defined window and,
+    # combined with the sweep sample count below, can run a very large number
+    # of simulations. Tune these to your design if -0.5/0.5 ns clips the
+    # actual setup/hold edge.
+    setup_time_range: [-0.5, 0.5]
+    hold_time_range: [-0.5, 0.5]
+
+
+    # --- Added: cell area placeholder ---
+    # Fill in once you have the WIDTH x HEIGHT from the Magic layout
+    # (needed for a complete .lib and for the report).
+    area: 57.011
